@@ -9,37 +9,46 @@
     <div class="wrapper">
         
         <div class="wrapper-content">
-            <h2>Zde se nachazí Footer</h2>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                 Ipsa, suscipit. Quis, pariatur? Sed, architecto ullam ex dolorum
-                  odio accusantium rerum recusandae error totam molestias nemo omnis
-                   nostrum deserunt esse autem?</p>
+            <?php if ( get_theme_mod( 'vlastni_footer_text' ) ) : ?>
+                <div class="footer-text">
+                    <?php echo wp_kses_post( wpautop( get_theme_mod( 'vlastni_footer_text' ) ) ); ?>
+                </div>
+            <?php else : ?>
+                <h2>Zde se nachazí Footer</h2>
+                <p>📧 E-mail: info@danielzeman.cz</p>
+                <p>📱 Telefon: +420 777 123 456</p>
+            <?php endif; ?>
+
             <div class="wrapper-content-social">
-                <a href="#">
-
-                </a>
-                <a href="#">
-
-                </a>
-                <a href="#">
-
-                </a>
-                <a href="#">
-
-                </a>
-            </div>    
+                <?php
+                $social = get_theme_mod( 'vlastni_footer_social', '' );
+                if ( ! empty( $social ) ) {
+                    $lines = preg_split( '/\r?\n/', $social );
+                    foreach ( $lines as $line ) {
+                        $parts = explode( '|', trim( $line ) );
+                        if ( count( $parts ) === 2 ) {
+                            $label = esc_html( $parts[0] );
+                            $url = esc_url( $parts[1] );
+                            printf( '<a href="%s" target="_blank" rel="noopener">%s</a>', $url, $label );
+                        }
+                    }
+                }
+                ?>
+            </div>
         </div>
         <div class="wrapper-footer">
             <div class="wrapper-footer-left">
-                <p>© 2024 Všechna práva vyhrazena</p>
             </div>
             <div class="wrapper-footer-right">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Contact Us</a>
+                <?php if ( function_exists( 'wp_nav_menu' ) && has_nav_menu( 'primary' ) ) : ?>
+                    <?php wp_nav_menu( array( 'theme_location' => 'primary', 'container' => false ) ); ?>
+                <?php else : ?>
+
+                <?php endif; ?>
             </div>
         </div>
     </div>
 
     
+    <?php wp_footer(); ?>
 </footer>
